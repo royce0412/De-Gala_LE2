@@ -19,11 +19,15 @@ def Cls():
     os.system('cls' if os.name == 'nt' else 'clear')
     
 # Function to display available games with their numbers and rental costs
-def display_available_games():
+def display_available_games(username):
     for index, game in enumerate(game_library, start = 1):
         game_quantity = game_library[game]["quantity"]
         game_cost = game_library[game]["cost"]
-        print(f"{index}: {game}: Quantity: {game_quantity}, Cost: {game_cost}")        
+        print(f"{index}: {game}: Quantity: {game_quantity}, Cost: {game_cost}")
+    print("")
+    input("Enter to continue...")
+    Cls()
+    user_menu(username)        
 
 # Function to register a new user
 def register_user():
@@ -51,52 +55,62 @@ def register_user():
 
 # Function to rent a game
 def rent_game(username):
-    print("Choose a new game to rent")
-    display_available_games()
+    print("To rent a game, enter its designated number. Leave it blank to return to the user menu.")
+    
+    for index, game in enumerate(game_library, start = 1):
+        game_quantity = game_library[game]["quantity"]
+        game_cost = game_library[game]["cost"]
+        print(f"{index}: {game}: Quantity: {game_quantity}, Cost: {game_cost}")
+        
     rent_choice = input("Enter: ")
     
     try:
-        if rent_choice == "1":
-            if game_library["Donkey Kong"]["quantity"] > 0 and user_accounts[username]["Balance"] >= game_library["Donkey Kong"]["cost"]:
-                user_accounts[username]["Inventory"].append("Donkey Kong")
-                game_library["Donkey Kong"]["quantity"] -= 1
-                user_accounts[username]["Balance"] -= game_library["Donkey Kong"]["cost"]
-                input("Game rented successfully!")
-                Cls()
-                user_menu(username)
+        if rent_choice != "":
+            if rent_choice == "1":
+                if game_library["Donkey Kong"]["quantity"] > 0 and user_accounts[username]["Balance"] >= game_library["Donkey Kong"]["cost"]:
+                    user_accounts[username]["Inventory"].append("Donkey Kong")
+                    game_library["Donkey Kong"]["quantity"] -= 1
+                    user_accounts[username]["Balance"] -= game_library["Donkey Kong"]["cost"]
+                    input("Game rented successfully!")
+                    Cls()
+                    user_menu(username)
+                else:
+                    input("Donkey Kong is already sold out, press enter to return.")
+                    Cls()
+                    rent_game(username)
+                    
+            elif rent_choice == "2":
+                if game_library["Super Mario Bros"]["quantity"] > 0 and user_accounts[username]["Balance"] >= game_library["Super Mario Bros"]["cost"]:
+                    user_accounts[username]["Inventory"].append("Super Mario Bros")
+                    game_library["Super Mario Bros"]["quantity"] -= 1
+                    user_accounts[username]["Balance"] -= game_library["Super Mario Bros"]["cost"]
+                    input("Game rented successfully!")
+                    Cls()
+                    user_menu(username)
+                else:
+                    input("Super Mario Bros is already sold out, press enter to return.")
+                    Cls()
+                    rent_game(username)
+                    
+            elif rent_choice == "3":
+                if game_library["Tetris"]["quantity"] > 0 and user_accounts[username]["Balance"] >= game_library["Tetris"]["cost"]:
+                    user_accounts[username]["Inventory"].append("Tetris")
+                    game_library["Tetris"]["quantity"] -= 1
+                    user_accounts[username]["Balance"] -= game_library["Tetris"]["cost"]
+                    input("Game rented successfully!")
+                    Cls()
+                    user_menu(username)
+                else:
+                    input("Tetris is already sold out, press enter to return.")
+                    Cls()
+                    rent_game(username)
+                    
             else:
-                input("Donkey Kong is already sold out, press enter to return.")
-                Cls()
-                rent_game(username)
-                
-        elif rent_choice == "2":
-            if game_library["Super Mario Bros"]["quantity"] > 0 and user_accounts[username]["Balance"] >= game_library["Super Mario Bros"]["cost"]:
-                user_accounts[username]["Inventory"].append("Super Mario Bros")
-                game_library["Super Mario Bros"]["quantity"] -= 1
-                user_accounts[username]["Balance"] -= game_library["Super Mario Bros"]["cost"]
-                input("Game rented successfully!")
-                Cls()
-                user_menu(username)
-            else:
-                input("Super Mario Bros is already sold out, press enter to return.")
-                Cls()
-                rent_game(username)
-                
-        elif rent_choice == "3":
-            if game_library["Tetris"]["quantity"] > 0 and user_accounts[username]["Balance"] >= game_library["Tetris"]["cost"]:
-                user_accounts[username]["Inventory"].append("Tetris")
-                game_library["Tetris"]["quantity"] -= 1
-                user_accounts[username]["Balance"] -= game_library["Tetris"]["cost"]
-                input("Game rented successfully!")
-                Cls()
-                user_menu(username)
-            else:
-                input("Tetris is already sold out, press enter to return.")
-                Cls()
-                rent_game(username)
-                
+                raise Exception("Invalid choice. Please enter a number from 1-3.")
         else:
-            raise Exception("Invalid choice. Please enter a number from 1-3.")
+            input("Enter to return...")
+            Cls()
+            user_menu(username)
     except Exception as b:
         print("Error: ", b)
         input("Enter to continue...")
@@ -106,17 +120,38 @@ def rent_game(username):
 
 # Function to return a game
 def return_game(username):
-    pass
+    print("To return a game, enter its designated number. Leave it blank to return to the user menu.")
+    print(f"{username}'s Inventory:")
+    
+    for index, game in enumerate(user_accounts[username]["Inventory"], start = 1):
+        print(f"{index}. {game}")
+        
+    return_choice = int(input("Enter: "))
+    if return_choice != "":
+        user_accounts[username]["Inventory"].pop(return_choice - 1)
+        input("Game returned successfully!")
+        Cls()
+        user_menu(username)
+    else:
+        print("Enter to return...")
+        Cls()
+        user_menu(username)
 
 # Function to top-up user account
 def top_up_account(username):
     print("Account Top-Up")
+    print("Enter a blank to return to the main menu.")
     top_up_amount = int(input("Enter amount: $"))
     print("")
-    top_up_amount += user_accounts[username]["Balance"]
-    input("Amount entered successfully!")
-    Cls()
-    user_menu(username)
+    if top_up_amount != "":
+        user_accounts[username]["Balance"] += top_up_amount
+        input("Amount entered successfully!")
+        Cls()
+        user_menu(username)
+    else:
+        print("Enter a key to return...")
+        Cls()
+        main()
     
 # Function to display user's inventory
 def display_inventory(username):
@@ -173,8 +208,16 @@ def logged_in_menu():
 
 # Function to check user credentials
 def check_credentials(username):
-    pass
-
+    print("Account Credentials")
+    credential_pass = user_accounts[username]["Password"]
+    credential_balance = user_accounts[username]["Balance"]
+    print(f" Username: {username}")
+    print(f"  -Password: {credential_pass}")
+    print(f"  -Balance: {credential_balance}")
+    input("Enter to continue...")
+    Cls()
+    user_menu(username)
+    
 def user_menu(username):
     print(f"Welcome to the main menu, {username}!")
     print("1. Rent Game")
@@ -197,11 +240,11 @@ def user_menu(username):
         elif user_choice == "4":
             display_inventory(username)
         elif user_choice == "5":
-            display_available_games()
+            display_available_games(username)
         elif user_choice == "6":
             check_credentials(username)
         elif user_choice == "7":
-            exit()
+            main()
         else:
             raise Exception("Invalid choice. Please enter a number from 1 to 7.")
         
