@@ -87,14 +87,17 @@ def display_game_inventory():
     pass
 
 # Function to handle user's logged-in menu
-def logged_in_menu(username):
+def logged_in_menu():
     print("Logging in...")
     
     username = input("Username: ")
     if username != "":
         login_password = input("Password: ")
         if login_password != "":
-        
+            if username in user_accounts and login_password == user_accounts[username]:
+                print("Enter to continue...")
+                Cls()
+                user_menu()
         else:
             input("Returning to main menu...")
             Cls()
@@ -106,9 +109,42 @@ def logged_in_menu(username):
     
 
 # Function to check user credentials
-def check_credentials(username, password):
+def check_credentials(username):
     pass
+
+def user_menu(username):
+    print(f"Welcome to the main menu, {username}")
+    print("1. Rent Game")
+    print("2. Return Game")
+    print("3. Top-up Account")
+    print("4. Display Inventory")
+    print("5. Display Available Games")
+    print("6. Check Credentials")
+    print("7. Log Out")
+    user_choice = input("Enter: ")
+    Cls()
     
+    try:
+        if user_choice == "1":
+            rent_game(username)
+        elif user_choice == "2":
+            return_game(username)
+        elif user_choice == "3":
+            top_up_account(username)
+        elif user_choice == "4":
+            display_game_inventory(username)
+        elif user_choice == "5":
+            display_available_games(username)
+        elif user_choice == "6":
+            check_credentials(username)
+        elif user_choice == "7":
+            exit()
+        else:
+            raise Exception("Invalid choice. Please enter a number from 1 to 7.")
+        
+    except Exception as a:
+        print("Error: ", a)
+        
 # Main function to run the program
 def main():
     print("Welcome to the Game Rental Shop!")
@@ -131,10 +167,9 @@ def main():
             raise Exception("Invalid choice. Please enter a number from 1 to 4.")
     
     except Exception as e:
-        input("Error: ", e)
+        print("Error: ", e)
 
     
 if __name__ == "__main__":
     main()
 
-print(user_accounts)
