@@ -38,7 +38,7 @@ def register_user():
             user_accounts[create_username] = account_details
             input("Account registered sucessfully!")
             Cls()
-            main()
+            top_up_account(create_username)
         else:
             input("Returning to main menu...")
             Cls()
@@ -109,9 +109,15 @@ def return_game(username):
     pass
 
 # Function to top-up user account
-def top_up_account(username, amount):
-    pass
-
+def top_up_account(username):
+    print("Account Top-Up")
+    top_up_amount = int(input("Enter amount: $"))
+    print("")
+    top_up_amount += user_accounts[username]["Balance"]
+    input("Amount entered successfully!")
+    Cls()
+    user_menu(username)
+    
 # Function to display user's inventory
 def display_inventory(username):
     print(f"{username}'s Inventory:")
