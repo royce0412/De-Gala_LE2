@@ -136,10 +136,7 @@ def rent_game(username):
 # Function to return a game
 def return_game(username):
     print("To return a game, enter its designated number. Leave it blank to return to the user menu.")
-    print(f"{username}'s Inventory:")
-    
-    for index, game in enumerate(user_accounts[username]["Inventory"], start = 1):
-        print(f"{index}. {game}")
+    display_inventory(username)
     
     number_of_games = len(user_accounts[username]["Inventory"])
     return_choice = input("Enter: ")
@@ -199,8 +196,9 @@ def display_inventory(username):
     
 # Function for admin to update game details
 def admin_update_game():
-    print("Select the number of the game you wish to update. Leave it blank to return to the admin menu.")
+    print("Select the number of the game you wish to update.")
     display_available_games()
+    print("4: Return")
     print("")
     
     try:
@@ -212,8 +210,10 @@ def admin_update_game():
             placeholder_for_update("Super Mario Bros")
         elif admin_update_choice == "3":
             placeholder_for_update("Tetris")
+        elif admin_update_choice == "4":
+            admin_menu()
         else:  
-            raise Exception("Invalid choice. Please enter a number from 1-3")
+            raise Exception("Invalid choice. Please enter a number from 1-4")
     except Exception as g:
         print("Error: ", g)
         input("Enter to continue...")
@@ -229,6 +229,7 @@ def placeholder_for_update(game):
             print("")
             try:
                 game_update_choice = input("Enter: ")
+                Cls()
                 if game_update_choice == "1":
                     update_quantity(game)
                 elif game_update_choice == "2":
@@ -252,40 +253,40 @@ def update_quantity(game):
                             game_library[game]["quantity"] += 1
                             input("Game updated successfully!....Enter to return")
                             Cls()
-                            admin_update_game()
+                            placeholder_for_update(game)
                     elif update_quantity_choice == "n":
                             input("Returning......")
                             Cls()
-                            admin_update_game()
+                            placeholder_for_update(game)
                     else:
                         raise Exception("Invalid choice. It should only be answered using y or n.")
             except Exception as l:
                         print("Error: ", l)
                         input("Enter to contnue...")
                         Cls()
-                        admin_update_game()
+                        placeholder_for_update(game)
 
 def update_cost(game):
             try: 
-                    print("Cost")
+                    print("Update Cost")
                     update_cost_choice = input("Would you like to change the cost of this item? (y/n): ") 
                     if update_cost_choice == "y":
                             change_cost = int(input("How much would you change its price to? $"))
                             game_library[game]["cost"] = change_cost
                             input("Game updated successfully!....Enter to return")
                             Cls()
-                            admin_update_game()
+                            placeholder_for_update(game)
                     elif update_cost_choice == "n":
                             input("Returning......")
                             Cls()
-                            admin_update_game()
+                            placeholder_for_update(game)
                     else:
                         raise Exception("Invalid choice. It should only be answered using y or n.")
             except Exception as l:
                         print("Error: ", l)
                         input("Enter to contnue...")
                         Cls()
-                        admin_update_game()
+                        placeholder_for_update(game)
                         
 # Function for admin login
 def admin_login():
@@ -324,7 +325,10 @@ def admin_menu():
         if admin_choice == "1":
             admin_update_game()
         elif admin_choice == "2":
-            display_game_inventory()
+            display_available_games()
+            input("Enter to return....")
+            Cls()
+            admin_menu()
         elif admin_choice == "3":
             admin_view_accounts()
         elif admin_choice == "4":
@@ -444,9 +448,7 @@ def game_redeem_process(username):
         Cls()
         user_menu(username)
         
-# Function to display game inventory
-def display_game_inventory():
-    pass
+
 
 # Function to handle user's logged-in menu
 def logged_in_menu():
@@ -480,8 +482,8 @@ def check_credentials(username):
     credential_points = user_accounts[username]["Points"]
     print(f" Username: {username}")
     print(f"  -Password: {credential_pass}")
-    print(f"  -Balance: {credential_balance}")
-    print(f"  -Points: {credential_points}")
+    print(f"  -Balance: ${credential_balance}")
+    print(f"  -Points: {credential_points} Points")
     input("Enter to continue...")
     Cls()
     user_menu(username)
