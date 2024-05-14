@@ -24,7 +24,7 @@ def display_available_games():
     for index, game in enumerate(game_library, start = 1):
         game_quantity = game_library[game]["quantity"]
         game_cost = game_library[game]["cost"]
-        print(f"{index}: {game}: Quantity: {game_quantity}, Cost: {game_cost}")
+        print(f"{index}: {game}: Quantity: {game_quantity}, Cost: ${game_cost}")
     print("")
 
 
@@ -142,30 +142,34 @@ def return_game(username):
         print(f"{index}. {game}")
     
     number_of_games = len(user_accounts[username]["Inventory"])
-    return_choice = None    
-    try:
-        return_choice = int(input("Enter: "))
-        if number_of_games > 0:
-            if return_choice >= 1 and return_choice <= number_of_games:
-                return_choice = str(return_choice)
-                game_to_return = user_accounts[username]["Inventory"]
-                game_library[game_to_return]["quantity"] += 1
-                user_accounts[username]["Inventory"].pop(return_choice - 1)
-                input("Game returned successfully!")
+    return_choice = input("Enter: ")
+    if return_choice != "":   
+        try:
+            if number_of_games > 0:
+                return_choice = int(return_choice)
+                if 1 <= return_choice <= number_of_games:
+                    game_to_return = user_accounts[username]["Inventory"][return_choice-1]
+                    game_library[game_to_return]["quantity"] += 1
+                    user_accounts[username]["Inventory"].pop(return_choice - 1)
+                    input("Game returned successfully!")
+                    Cls()
+                    user_menu(username)
+                else:
+                    raise Exception(f"Invalid choice. Please choose a number from 1 to {number_of_games}.")
+            elif number_of_games <= 0:
+                input("There are no games in your inventory....Enter to return")
                 Cls()
                 user_menu(username)
             else:
-                raise Exception(f"Invalid choice. Please choose a number from 1 to {number_of_games}.")
-    except Exception as f:
-        if return_choice == None:
-            input("Enter to return to user menu...")
-            Cls()
-            user_menu(username)
-        else:
-            input("Error: ", f)
-            Cls()
-            user_menu(username)
-    
+                raise Exception
+        except Exception as f:
+                print("Error: ", f)
+                input("Enter to continue...")
+                Cls()
+                user_menu(username)
+    else:
+        Cls()
+        user_menu(username)
 # Function to top-up user account
 def top_up_account(username):
     print("Account Top-Up")
@@ -194,9 +198,95 @@ def display_inventory(username):
 
     
 # Function for admin to update game details
-def admin_update_game(username):
-    pass
+def admin_update_game():
+    print("Select the number of the game you wish to update. Leave it blank to return to the admin menu.")
+    display_available_games()
+    print("")
+    
+    try:
+        admin_update_choice = input("Enter: ")
+        Cls()
+        if admin_update_choice == "1":
+            placeholder_for_update("Donkey Kong")
+        elif admin_update_choice == "2":
+            placeholder_for_update("Super Mario Bros")
+        elif admin_update_choice == "3":
+            placeholder_for_update("Tetris")
+        else:  
+            raise Exception("Invalid choice. Please enter a number from 1-3")
+    except Exception as g:
+        print("Error: ", g)
+        input("Enter to continue...")
+        Cls()
+        admin_menu()
+        
+def placeholder_for_update(game):
+            
+            print("Update Game Details")
+            print("1. Quantity")
+            print("2. Cost")
+            print("3. Return")
+            print("")
+            try:
+                game_update_choice = input("Enter: ")
+                if game_update_choice == "1":
+                    update_quantity(game)
+                elif game_update_choice == "2":
+                    update_cost(game)
+                elif game_update_choice =="3":
+                    Cls()
+                    admin_update_game()
+                else:
+                    raise Exception("Invalid choice. Please enter a number from 1-3.")
+            except Exception as ab:
+                print("Error: ", ab)
+                input("")
+                Cls()
+                admin_update_game()
 
+def update_quantity(game):
+            try: 
+                    print("Update Quantity")
+                    update_quantity_choice = input("Would you like to add more of this item? (y/n): ") 
+                    if update_quantity_choice == "y":
+                            game_library[game]["quantity"] += 1
+                            input("Game updated successfully!....Enter to return")
+                            Cls()
+                            admin_update_game()
+                    elif update_quantity_choice == "n":
+                            input("Returning......")
+                            Cls()
+                            admin_update_game()
+                    else:
+                        raise Exception("Invalid choice. It should only be answered using y or n.")
+            except Exception as l:
+                        print("Error: ", l)
+                        input("Enter to contnue...")
+                        Cls()
+                        admin_update_game()
+
+def update_cost(game):
+            try: 
+                    print("Cost")
+                    update_cost_choice = input("Would you like to change the cost of this item? (y/n): ") 
+                    if update_cost_choice == "y":
+                            change_cost = int(input("How much would you change its price to? $"))
+                            game_library[game]["cost"] = change_cost
+                            input("Game updated successfully!....Enter to return")
+                            Cls()
+                            admin_update_game()
+                    elif update_cost_choice == "n":
+                            input("Returning......")
+                            Cls()
+                            admin_update_game()
+                    else:
+                        raise Exception("Invalid choice. It should only be answered using y or n.")
+            except Exception as l:
+                        print("Error: ", l)
+                        input("Enter to contnue...")
+                        Cls()
+                        admin_update_game()
+                        
 # Function for admin login
 def admin_login():
     print("Please enter your username and password to login.")
@@ -437,6 +527,9 @@ def user_menu(username):
         
     except Exception as a:
         print("Error: ", a)
+        input("Enter to return to user menu...")
+        Cls()
+        user_menu(username)
         
 # Main function to run the program
 def main():
