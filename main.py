@@ -148,6 +148,8 @@ def return_game(username):
         if number_of_games > 0:
             if return_choice >= 1 and return_choice <= number_of_games:
                 return_choice = str(return_choice)
+                game_to_return = user_accounts[username]["Inventory"]
+                game_library[game_to_return]["quantity"] += 1
                 user_accounts[username]["Inventory"].pop(return_choice - 1)
                 input("Game returned successfully!")
                 Cls()
@@ -273,22 +275,23 @@ def redeem_free_rental(username):
     
     try:
         redeem_choice = input("Would you like to redeem your free game rental? (y/n): ")
-        if redeem_point_display >= 3:
-            if redeem_choice == "y":
-                game_redeem_process(username)
-                input("Successfully redeemed!... Enter to continue")
-                Cls()
-                redeem_free_rental(username)
-            elif redeem_choice == "n":
+        Cls()
+        if redeem_choice == "y":
+                if redeem_point_display >= 3:
+                    game_redeem_process(username)
+                    input("Successfully redeemed!... Enter to continue")
+                    Cls()
+                    redeem_free_rental(username)
+                else:
+                    input("Insufficient Points. Enter to continue")
+                    Cls()
+                    user_menu(username)
+        elif redeem_choice == "n":
                 input("Returning to user menu...")
                 Cls()
                 user_menu(username)
-            else:
-                raise Exception("Invalid choice. Please only enter y or n.")
         else:
-            input("Insufficient Points. Enter to continue")
-            Cls()
-            user_menu(username)
+            raise Exception("Invalid choice. Please only enter y or n.")
             
     except Exception as c:
         print("Error: ", c)
@@ -327,7 +330,7 @@ def game_redeem_process(username):
                     Cls()
                     game_redeem_process(username)
                     
-            elif game_redeem_process == "3":
+            elif game_redeem_choice == "3":
                 if game_library["Tetris"]["quantity"] > 0: 
                         user_accounts[username]["Inventory"].append("Tetris")
                         game_library["Tetris"]["quantity"] -= 1
