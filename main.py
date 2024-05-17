@@ -98,7 +98,7 @@ def rent_game_contents(username, game):
                         Cls()
                         user_menu(username)
                 else:
-                    input("Donkey Kong is already sold out, press enter to return.")
+                    input(f"{game} is already sold out, press enter to return.")
                     Cls()
                     rent_game(username)
                     
@@ -159,7 +159,7 @@ def top_up_account(username):
             raise Exception("Please enter a positive number.")
     
     except Exception as tp:
-        print("Error: ", te)
+        print("Error: ", tp)
         input("Enter to continue...")
         Cls()
         top_up_account(username)
@@ -409,7 +409,6 @@ def game_redeem_process_2(username, game):
     if game_library[game]["quantity"] > 0: 
         user_accounts[username]["Inventory"].append(game)
         game_library[game]["quantity"] -= 1
-        user_accounts[username]["Balance"] -= game_library[game]["cost"]
         user_accounts[username]["Points"] -= 3
     else:
         input(f"{game} is already sold out, press enter to return.")
